@@ -1,0 +1,27 @@
+{
+  "name": "@bamapps/bam-artifact",
+  "version": "0.0.2",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "jasmine"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BryanApellanes/bam-artifact.git"
+  },
+  "author": "Bryan Apellanes",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/BryanApellanes/bam-artifact/issues"
+  },
+  "homepage": "https://github.com/BryanApellanes/bam-artifact#readme",
+  "devDependencies": {
+    "jasmine": "^3.6.3",
+    "jasmine-spec-reporter": "^6.0.0"
+  },
+  "dependencies": {
+    "@actions/core": "^1.2.6",
+    "@actions/github": "^4.0.0"
+  }
+}

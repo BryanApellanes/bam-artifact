@@ -1,0 +1,12 @@
+name: 'bam-artifact'
+description: 'Customizable artifact upload'
+inputs: 
+  files: 
+    description: 'A list of files to upload'
+    required: true
+  rootDirectory:
+    description: 'A file path that denotes the root directory of the files being uploaded. This path is used to strip the paths provided in files to control how they are uploaded and structured'
+    required: true
+  options:
+    description: 'Extra options that allow for the customation of the upload behavior'
+    required: false
