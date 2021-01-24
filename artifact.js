@@ -1,3 +1,5 @@
+const { resolve } = require('path');
+
 var bamArtifact = (function () {
     var bamInputs = require('@bamapps/bam-inputs'),
         _ = require('underscore'),
@@ -34,26 +36,27 @@ var bamArtifact = (function () {
                 opts.onExit(code);
             })
         },
-        gitCommitSha: function(){
-            var _the = this,
-                sha = '';
+        exec: function(command, argsArray){
+            var _the = this;
             return new Promise((resolve, reject) => {
                 _the.startProcess({
-                    command: 'git',
-                    args: ["rev-parse", "--short", "HEAD"],
+                    command: command,
+                    args: argsArray,
                     onStdOut: function(data) {
-                        sha = data.toString();
-                        resolve(sha);
+                        resolve(data);
                     },
                     onStdErr: function(data) {
                         reject(data);
                     }
-                });
-            })
+                });              
+            });
+        },
+        gitCommitSha: async function(){
+            return await this.exec("git", ["rev-parse", "--short", "HEAD"]);
         },
         run: function (scriptArgs) {
-            var bi = dependencies.bamInputs;
-            var args = bi.bamCliArgsFromActionInputs({namePrefix: null, path: null});
+            var inputs = dependencies.bamInputs;
+            var args = inputs.bamCliArgsFromActionInputs({namePrefix: null, path: null});
             if(!hasValue(args.path)){
                 actionsCore.setFailed('Failed to get "path"');
             }
