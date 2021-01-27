@@ -25,6 +25,7 @@
     "@actions/github": "^4.0.0",
     "@bamapps/bam-cli-args": "0.0.1",
     "@bamapps/bam-inputs": "0.0.2",
+    "@bamapps/bamfs": "0.0.1",
     "chai": "^4.2.0",
     "expect": "^26.6.2"
   }

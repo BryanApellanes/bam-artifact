@@ -7613,7 +7613,7 @@ const { resolve } = __nccwpck_require__(5622);
 
 var bamArtifact = (function () {
     var bamInputs = __nccwpck_require__(2852),
-        bamFs = __nccwpck_require__(5873),
+        bamFs = __nccwpck_require__(8757),
         _ = __nccwpck_require__(3279),
         actionsCore = __nccwpck_require__(996),
         actionsArtifact = __nccwpck_require__(7918),
@@ -8929,6 +8929,15 @@ exports.checkBypass = checkBypass;
 /***/ (() => {
 
 if(false){}
+
+
+
+/***/ }),
+
+/***/ 8757:
+/***/ (() => {
+
+if (false) {}
 
 
 
@@ -15510,14 +15519,6 @@ function wrappy (fn, cb) {
     return ret
   }
 }
-
-
-/***/ }),
-
-/***/ 5873:
-/***/ ((module) => {
-
-module.exports = eval("require")("@bamapps/bamfs");
 
 
 /***/ }),
