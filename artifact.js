@@ -2,6 +2,7 @@ const { resolve } = require('path');
 
 var bamArtifact = (function () {
     var bamInputs = require('@bamapps/bam-inputs'),
+        bamFs = require('@bamapps/bamfs'),
         _ = require('underscore'),
         actionsCore = require('@actions/core'),
         actionsArtifact = require('@actions/artifact'),
@@ -54,17 +55,29 @@ var bamArtifact = (function () {
         gitCommitSha: async function(){
             return await this.exec("git", ["rev-parse", "--short", "HEAD"]);
         },
-        run: function (scriptArgs) {
-            var inputs = dependencies.bamInputs;
-            var args = inputs.bamCliArgsFromActionInputs({namePrefix: null, path: null});
-            if(!hasValue(args.path)){
-                actionsCore.setFailed('Failed to get "path"');
+        run: async function (scriptArgs) {
+            try {
+                var _this = this;
+                var inputs = dependencies.bamInputs;
+                var actionInputs = inputs.bamCliArgsFromActionInputs({ namePrefix: null, path: null });
+                if (!hasValue(actionInputs.path)) {
+                    actionsCore.setFailed('Failed to get "path"');
+                }
+                if (!hasValue(actionInputs.namePrefix)) {
+                    actionsCore.setFailed('Failed to get "name"');
+                }
+                const artifactClient = actionsArtifact.create();
+                const artifactName = `${namePrefix}-${await _this.gitCommitSha()}`;
+                const files = bamFs.getAllFiles(actionInputs.path);
+                const rootDirectory = actionInputs.path;
+                const options = {
+                    conntinueOnError: true
+                }
+                const uploadResult = await artifactClient.uploadArtifact(artifactName, files, rootDirectory, options);
+                actionsCore.info(`bam-artifact upload result: ${JSON.stringify(uploadResult)}`);
+            } catch(error){
+                actionsCore.setFailed(error.message);
             }
-            if(!hasValue(args.namePrefix)){
-                actionsCore.setFailed('Failed to get "name"');
-            }
-            const artifactClient = actionsArtifact.create();
-            //const artifactName = 
         },
         inject: function (obj) {
             dependencies = _.extend({}, dependencies, obj);
