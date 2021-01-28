@@ -1,6 +1,6 @@
 var { expect } = require("chai");
 
-describe("bam inputs", function () {
+describe("bam artifact", function () {
 
     it("should get git commit from bam-artifact", function(done) {
         var bamArtifact = require('../artifact');
@@ -14,6 +14,13 @@ describe("bam inputs", function () {
         var bamArtifact = require('../artifact');
         var sha = await bamArtifact.gitCommitSha();
         console.log('USING await: ' + sha);
+        done();
+    })
+
+    it("should be able to require bam-inputs", function(done){
+        var bamInputs = require('@bamapps/bam-inputs');
+        expect(bamInputs).to.not.be.null;
+        expect(bamInputs.bamCliArgsFromActionInputs).to.be.a('function');
         done();
     })
 });

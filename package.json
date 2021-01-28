@@ -17,14 +17,14 @@
   },
   "homepage": "https://github.com/BryanApellanes/bam-artifact#readme",
   "devDependencies": {
-    "jasmine": "^3.6.3",
+    "jasmine": "^3.6.4",
     "jasmine-spec-reporter": "^6.0.0"
   },
   "dependencies": {
     "@actions/core": "^1.2.6",
     "@actions/github": "^4.0.0",
     "@bamapps/bam-cli-args": "0.0.1",
-    "@bamapps/bam-inputs": "0.0.2",
+    "@bamapps/bam-inputs": "0.0.6",
     "@bamapps/bamfs": "0.0.1",
     "chai": "^4.2.0",
     "expect": "^26.6.2"
