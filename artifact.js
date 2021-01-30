@@ -58,13 +58,19 @@ var bamArtifact = (function () {
         run: async function (scriptArgs) {
             try {
                 var _this = this;
-                var inputs = dependencies.bamInputs;
+                var inputs = require('./inputs');
                 var actionInputs = inputs.bamCliArgsFromActionInputs({ namePrefix: null, path: null });
+                var requiredInputsNotProvided = false;
                 if (!hasValue(actionInputs.path)) {
                     actionsCore.setFailed('Failed to get "path"');
+                    requiredInputsNotProvided = true;
                 }
                 if (!hasValue(actionInputs.namePrefix)) {
                     actionsCore.setFailed('Failed to get "name"');
+                    requiredInputsNotProvided = true;
+                }
+                if(requiredInputsNotProvided){
+                    return;
                 }
                 const artifactClient = actionsArtifact.create();
                 const artifactName = `${namePrefix}-${await _this.gitCommitSha()}`;

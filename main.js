@@ -1,4 +1,8 @@
+var bamArtifact = require('./artifact');
+
 if (typeof require !== 'undefined' && require.main === module) {
-    require('./artifact').run(process.argv.slice(2));
+    bamArtifact.run(process.argv.slice(2));
 }
+
+module.exports = bamArtifact;
 

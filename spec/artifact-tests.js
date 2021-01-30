@@ -17,6 +17,18 @@ describe("bam artifact", function () {
         done();
     })
 
+    it("should get baminputs", async function(done){
+        var bamArtifact = require('../artifact');
+        bamInput = bamArtifact.getBamInputs();
+        expect(bamInput.bamCliArgsFromActionInputs).to.be.a('function');
+        done();
+    })
+
+    it("should run", function(done){
+        var bamArtifact = require('../artifact');
+        bamArtifact.run(process.argv.slice(2));
+    });
+
     it("should be able to require bam-inputs", function(done){
         var bamInputs = require('@bamapps/bam-inputs');
         expect(bamInputs).to.not.be.null;
