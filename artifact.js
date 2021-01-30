@@ -77,9 +77,9 @@ var bamArtifact = (function () {
         run: function (scriptArgs) {
             try {
                 var _this = this;
-                var inputs = require('./inputs');
+                var bamArgs = require('./inputs');
                 actions.info(JSON.stringify(inputs));
-                var actionInputs = inputs.bamCliArgsFromActionInputs({ namePrefix: null, path: null });                
+                var actionInputs = bamArgs.bamCliArgsFromActionInputs({ namePrefix: null, path: null });                
                 var requiredInputsNotProvided = false;
                 if (!hasValue(actionInputs.path)) {
                     actionsCore.setFailed('Failed to get "path"');
