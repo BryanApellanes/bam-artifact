@@ -74,10 +74,10 @@ var bamArtifact = (function () {
         gitCommitSha: async function(){
             return await this.exec("git", ["rev-parse", "--short", "HEAD"]);
         },
-        run: function (scriptArgs) {
+        run: async function (scriptArgs) {
             try {
                 var _this = this;
-                var bamArgs = require('./inputs');
+                var bamArgs = dependencies.bamInputs;
                 actions.info(JSON.stringify(inputs));
                 var actionInputs = bamArgs.bamCliArgsFromActionInputs({ namePrefix: null, path: null });                
                 var requiredInputsNotProvided = false;

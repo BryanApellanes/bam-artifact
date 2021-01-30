@@ -7634,6 +7634,25 @@ var bamArtifact = (function () {
         bamArgs: dependencies.args,
         scriptInfo: dependencies.scriptInfo,
         github: dependencies.github,
+        tryRequire: function(name){
+            try{
+                return require(name);
+            }catch(ex){
+                return null;
+            }
+        },
+        getDependency: function(name){
+            if(dependencies[name]){
+                return dependencies[name];
+            }
+            var required = this.tryRequire(name);
+            if(required){
+                return required;
+            }
+        },
+        injectDependency: function(name, obj){
+            dependencies[name] = obj;
+        },
         startProcess: function(options) {
             var opts = _.extend({}, {command: '', args: [], onStdOut: function(){}, onStdErr: function(){}, onExit: function(){}}, options);
             const { spawn } = __nccwpck_require__(3129);
@@ -7669,13 +7688,20 @@ var bamArtifact = (function () {
         run: async function (scriptArgs) {
             try {
                 var _this = this;
-                var inputs = dependencies.bamInputs;
-                var actionInputs = inputs.bamCliArgsFromActionInputs({ namePrefix: null, path: null });
+                var bamArgs = dependencies.bamInputs;
+                actions.info(JSON.stringify(inputs));
+                var actionInputs = bamArgs.bamCliArgsFromActionInputs({ namePrefix: null, path: null });                
+                var requiredInputsNotProvided = false;
                 if (!hasValue(actionInputs.path)) {
                     actionsCore.setFailed('Failed to get "path"');
+                    requiredInputsNotProvided = true;
                 }
                 if (!hasValue(actionInputs.namePrefix)) {
                     actionsCore.setFailed('Failed to get "name"');
+                    requiredInputsNotProvided = true;
+                }
+                if(requiredInputsNotProvided){
+                    return;
                 }
                 const artifactClient = actionsArtifact.create();
                 const artifactName = `${namePrefix}-${await _this.gitCommitSha()}`;
@@ -7703,11 +7729,15 @@ module.exports = bamArtifact;
 /***/ }),
 
 /***/ 8279:
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __nccwpck_require__) => {
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+var bamArtifact = __nccwpck_require__(8613);
 
 if ( true && require.main === require.cache[eval('__filename')]) {
-    __nccwpck_require__(8613).run(process.argv.slice(2));
+    bamArtifact.run(process.argv.slice(2));
 }
+
+module.exports = bamArtifact;
 
 
 
