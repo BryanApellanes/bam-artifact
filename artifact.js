@@ -23,6 +23,25 @@ var bamArtifact = (function () {
         bamArgs: dependencies.args,
         scriptInfo: dependencies.scriptInfo,
         github: dependencies.github,
+        tryRequire: function(name){
+            try{
+                return require(name);
+            }catch(ex){
+                return null;
+            }
+        },
+        getDependency: function(name){
+            if(dependencies[name]){
+                return dependencies[name];
+            }
+            var required = this.tryRequire(name);
+            if(required){
+                return required;
+            }
+        },
+        injectDependency: function(name, obj){
+            dependencies[name] = obj;
+        },
         startProcess: function(options) {
             var opts = _.extend({}, {command: '', args: [], onStdOut: function(){}, onStdErr: function(){}, onExit: function(){}}, options);
             const { spawn } = require('child_process');
@@ -55,11 +74,12 @@ var bamArtifact = (function () {
         gitCommitSha: async function(){
             return await this.exec("git", ["rev-parse", "--short", "HEAD"]);
         },
-        run: async function (scriptArgs) {
+        run: function (scriptArgs) {
             try {
                 var _this = this;
                 var inputs = require('./inputs');
-                var actionInputs = inputs.bamCliArgsFromActionInputs({ namePrefix: null, path: null });
+                console.log(inputs);
+                var actionInputs = inputs.bamCliArgsFromActionInputs({ namePrefix: null, path: null });                
                 var requiredInputsNotProvided = false;
                 if (!hasValue(actionInputs.path)) {
                     actionsCore.setFailed('Failed to get "path"');
