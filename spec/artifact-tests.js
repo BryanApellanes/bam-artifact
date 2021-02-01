@@ -27,6 +27,7 @@ describe("bam artifact", function () {
     it("should run", function(done){
         var bamArtifact = require('../artifact');
         bamArtifact.run(process.argv.slice(2));
+        done();
     });
 
     it("should be able to require bam-inputs", function(done){

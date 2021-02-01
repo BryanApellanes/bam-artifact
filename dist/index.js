@@ -7617,7 +7617,11 @@ var bamArtifact = (function () {
         _ = __nccwpck_require__(3279),
         actionsCore = __nccwpck_require__(996),
         actionsArtifact = __nccwpck_require__(7918),
-        github = __nccwpck_require__(3083);
+        github = __nccwpck_require__(3083)
+        defaultValues = {
+            namePrefix: "BamArtifact",
+            path: "/opt/bam/artifacts"
+        };
 
     var dependencies = {
         bamInputs: bamInputs,
@@ -7685,36 +7689,36 @@ var bamArtifact = (function () {
         gitCommitSha: async function(){
             return await this.exec("git", ["rev-parse", "--short", "HEAD"]);
         },
-        run: async function (scriptArgs) {
-            try {
-                var _this = this;
-                var bamArgs = dependencies.bamInputs;
-                actions.info(JSON.stringify(inputs));
-                var actionInputs = bamArgs.bamCliArgsFromActionInputs({ namePrefix: null, path: null });                
-                var requiredInputsNotProvided = false;
-                if (!hasValue(actionInputs.path)) {
-                    actionsCore.setFailed('Failed to get "path"');
-                    requiredInputsNotProvided = true;
-                }
-                if (!hasValue(actionInputs.namePrefix)) {
-                    actionsCore.setFailed('Failed to get "name"');
-                    requiredInputsNotProvided = true;
-                }
-                if(requiredInputsNotProvided){
-                    return;
-                }
-                const artifactClient = actionsArtifact.create();
-                const artifactName = `${namePrefix}-${await _this.gitCommitSha()}`;
-                const files = bamFs.getAllFiles(actionInputs.path);
-                const rootDirectory = actionInputs.path;
-                const options = {
-                    conntinueOnError: true
-                }
-                const uploadResult = await artifactClient.uploadArtifact(artifactName, files, rootDirectory, options);
-                actionsCore.info(`bam-artifact upload result: ${JSON.stringify(uploadResult)}`);
-            } catch(error){
-                actionsCore.setFailed(error.message);
+        getBamInputs: function(){
+                return dependencies.bamInputs;
+        },
+        run: async function (scriptArgs) {           
+            var _this = this;
+            var bamArgs = dependencies.bamInputs;
+            var bamActions = dependencies.actionsCore;
+            bamActions.info(JSON.stringify(bamArgs));
+            var actionInputs = bamArgs.bamCliArgsFromActionInputs(defaultValues);
+            var requiredInputsNotProvided = false;
+            if (!hasValue(actionInputs.path)) {
+                bamActions.setFailed('Failed to get "path"');
+                requiredInputsNotProvided = true;
             }
+            if (!hasValue(actionInputs.namePrefix)) {
+                bamActions.setFailed('Failed to get "name"');
+                requiredInputsNotProvided = true;
+            }
+            if(requiredInputsNotProvided){
+                return;
+            }
+            const artifactClient = actionsArtifact.create();
+            const artifactName = `${namePrefix}-${await _this.gitCommitSha()}`;
+            const files = bamFs.getAllFiles(actionInputs.path);
+            const rootDirectory = actionInputs.path;
+            const options = {
+                conntinueOnError: true
+            }
+            const uploadResult = await artifactClient.uploadArtifact(artifactName, files, rootDirectory, options);
+            bamActions.info(`bam-artifact upload result: ${JSON.stringify(uploadResult)}`);
         },
         inject: function (obj) {
             dependencies = _.extend({}, dependencies, obj);
