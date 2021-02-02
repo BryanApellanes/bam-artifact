@@ -8,8 +8,8 @@ var bamArtifact = (function () {
         actionsArtifact = require('@actions/artifact'),
         github = require('@actions/github')
         defaultValues = {
-            namePrefix: "BamArtifact",
-            path: "/opt/bam/artifacts"
+            namePrefix: null,
+            path: null
         };
 
     var dependencies = {
@@ -84,38 +84,40 @@ var bamArtifact = (function () {
         run: async function (scriptArgs) {           
             var _this = this;
             var bamArgs = dependencies.bamInputs;
-            var bamActions = dependencies.actionsCore;
-            bamActions.info(JSON.stringify(bamArgs));
+            var actionsCore = dependencies.actionsCore;
+            actionsCore.info(JSON.stringify(bamArgs));
             var actionInputs = bamArgs.bamCliArgsFromActionInputs(defaultValues);
             var requiredInputsNotProvided = false;
             if (!hasValue(actionInputs.path)) {
-                bamActions.setFailed('Failed to get "path"');
+                actionsCore.setFailed('Failed to get "path"');
                 requiredInputsNotProvided = true;
             }
+            actionsCore.info(`path: ${actionInputs.path}`)
             if (!hasValue(actionInputs.namePrefix)) {
-                bamActions.setFailed('Failed to get "name"');
+                actionsCore.setFailed('Failed to get "name"');
                 requiredInputsNotProvided = true;
             }
+            actionsCore.info(`prefix: ${actionInputs.namePrefix}`);
             if(requiredInputsNotProvided){
                 return;
             }
-            bamActions.info('creating artifact client');
+            actionsCore.info('creating artifact client');
             const artifactClient = actionsArtifact.create();
             
-            bamActions.info('getting artifact name');
+            actionsCore.info('getting artifact name');
             const artifactName = `${namePrefix}-${await _this.gitCommitSha()}`;
-            bamActions.info(`artifact name is ${artifactName}`);
+            actionsCore.info(`artifact name is ${artifactName}`);
 
-            bamActions.info('getting files to upload');
+            actionsCore.info('getting files to upload');
             const files = bamFs.getAllFiles(actionInputs.path);
-            bamActions.info(`file: \r\n${JSON.stringify(files)}`);
+            actionsCore.info(`file: \r\n${JSON.stringify(files)}`);
             const rootDirectory = actionInputs.path;
-            bamActions.info(`root directory: ${rootDirectory}`);
+            actionsCore.info(`root directory: ${rootDirectory}`);
             const options = {
                 conntinueOnError: true
             }
             const uploadResult = await artifactClient.uploadArtifact(artifactName, files, rootDirectory, options);
-            bamActions.info(`bam-artifact upload result: ${JSON.stringify(uploadResult)}`);
+            actionsCore.info(`bam-artifact upload result: ${JSON.stringify(uploadResult)}`);
         },
         inject: function (obj) {
             dependencies = _.extend({}, dependencies, obj);
