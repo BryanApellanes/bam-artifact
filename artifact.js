@@ -99,10 +99,18 @@ var bamArtifact = (function () {
             if(requiredInputsNotProvided){
                 return;
             }
+            console.log('creating artifact client');
             const artifactClient = actionsArtifact.create();
+            
+            console.log('getting artifact name');
             const artifactName = `${namePrefix}-${await _this.gitCommitSha()}`;
+            console.log(`artifact name is ${artifactName}`);
+
+            console.log('getting files to upload');
             const files = bamFs.getAllFiles(actionInputs.path);
+            console.log(`file: \r\n${JSON.stringify(files)}`);
             const rootDirectory = actionInputs.path;
+            console.log(`root directory: ${rootDirectory}`);
             const options = {
                 conntinueOnError: true
             }
